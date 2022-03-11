@@ -1,0 +1,21 @@
+{
+  "name": "swabe-2",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "repository": "https://github.com/andeby00/swabe-2.git",
+  "author": "<201907026@post.au.dk>",
+  "license": "MIT",
+  "scripts": {
+    "start": "yarn ts-node-dev --respawn --transpile-only index.ts"
+  },
+  "dependencies": {
+    "apollo-server": "^3.6.4",
+    "graphql": "^16.3.0",
+    "ts-node-dev": "^1.1.8"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
+  }
+}
