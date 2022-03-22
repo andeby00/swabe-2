@@ -6,15 +6,18 @@
   "author": "<201907026@post.au.dk>",
   "license": "MIT",
   "scripts": {
-    "start": "yarn ts-node-dev --respawn --transpile-only index.ts"
+    "start": "yarn prisma generate && yarn ts-node-dev --ignore-watch nexus-typegen.ts --respawn --transpile-only ./src"
   },
   "dependencies": {
+    "@prisma/client": "^3.11.0",
     "apollo-server": "^3.6.4",
     "graphql": "^16.3.0",
+    "nexus": "^1.3.0",
     "ts-node-dev": "^1.1.8"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
+    "prisma": "^3.11.0",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.2"
   }
