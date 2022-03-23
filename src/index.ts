@@ -12,8 +12,8 @@ const schema = makeSchema({
     export: "ContextType",
   },
   outputs: {
-    typegen: join(__dirname, "nexus-typegen.ts"), // 2
-    schema: join(__dirname, "schema.graphql"), // 3
+    typegen: join(__dirname, "..", "nexus-typegen.ts"), // 2
+    schema: join(__dirname, "..", "schema.graphql"), // 3
   },
 });
 
@@ -28,6 +28,7 @@ const server = new ApolloServer({
 $settings({
   prismaClientContextField: "db", // <-- Tell Nexus Prisma
 });
+
 server.listen().then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
 });

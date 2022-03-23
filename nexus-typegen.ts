@@ -4,7 +4,7 @@
  */
 
 
-import type { ContextType } from "./types/context"
+import type { ContextType } from "./src/types/context"
 
 
 
@@ -28,7 +28,20 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Login: { // root type
+    id?: string | null; // ID
+    name?: string | null; // String
+    token?: string | null; // String
+  }
+  Mutation: {};
   Query: {};
+  User: { // root type
+    id: string; // ID!
+    mail: string; // String!
+    name: string; // String!
+    role: string; // String!
+    token?: string | null; // String
+  }
 }
 
 export interface NexusGenInterfaces {
@@ -42,18 +55,56 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  Login: { // field return type
+    id: string | null; // ID
+    name: string | null; // String
+    token: string | null; // String
+  }
+  Mutation: { // field return type
+    userCreate: NexusGenRootTypes['Login']; // Login!
+  }
   Query: { // field return type
-    users: string; // String!
+    users: NexusGenRootTypes['User'][]; // [User!]!
+  }
+  User: { // field return type
+    id: string; // ID!
+    mail: string; // String!
+    name: string; // String!
+    role: string; // String!
+    token: string | null; // String
   }
 }
 
 export interface NexusGenFieldTypeNames {
+  Login: { // field return type name
+    id: 'ID'
+    name: 'String'
+    token: 'String'
+  }
+  Mutation: { // field return type name
+    userCreate: 'Login'
+  }
   Query: { // field return type name
-    users: 'String'
+    users: 'User'
+  }
+  User: { // field return type name
+    id: 'ID'
+    mail: 'String'
+    name: 'String'
+    role: 'String'
+    token: 'String'
   }
 }
 
 export interface NexusGenArgTypes {
+  Mutation: {
+    userCreate: { // args
+      mail: string; // String!
+      name: string; // String!
+      password: string; // String!
+      role: string; // String!
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {
