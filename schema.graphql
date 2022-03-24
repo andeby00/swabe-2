@@ -16,6 +16,7 @@ type Mutation {
   updateReservation(end: Int!, roomNumber: Int!, start: Int!, uid: String!, userId: String!): Reservation
   updateRoom(capacity: Int!, category: String!, minibar: Boolean!, roomNumber: Int!): Room
   userCreate(mail: String!, name: String!, password: String!, role: String!): Login!
+  userLogin(mail: String!, password: String!): Login!
 }
 
 type Query {

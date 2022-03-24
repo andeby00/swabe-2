@@ -1,6 +1,6 @@
 import { extendType, list, nonNull, objectType, stringArg } from "nexus";
 import { User } from "nexus-prisma";
-import { hash } from "bcrypt";
+import { compare, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 
 export const user = objectType({
@@ -48,35 +48,25 @@ export const UserQueries = extendType({
 export const UserMutations = extendType({
   type: "Mutation",
   definition(t) {
-    t.field("userCreate", {
+    t.field("userLogin", {
       type: nonNull("Login"),
       args: {
-        name: nonNull(stringArg()),
         mail: nonNull(stringArg()),
         password: nonNull(stringArg()),
-        role: nonNull(stringArg()),
       },
-      resolve: async (_source, args, ctx) => {
-        // const anyUser = await ctx.db.user.findFirst({ where: { username } });
 
-        // if (anyUser) {
-        //   throw new ApolloError('Username already in use');
-        // }
+      resolve: async (source, { mail, password }, ctx) => {
+        const user = await ctx.db.user.findFirst({ where: { mail } });
 
-        const user = await ctx.db.user.create({
-          data: {
-            name: args.name,
-            mail: args.mail,
-            password: await hash(args.password, 12),
-            role: args.role,
-          },
-        });
+        if (!user || !(await compare(password, user.password))) {
+          throw new Error("Invalid username/password");
+        }
 
         return {
           token: await sign({ userId: user.id }, process.env.SECRET!, {
             expiresIn: "60m",
           }),
-          name: user.name,
+          mail: user.mail,
           id: user.id,
         };
       },
@@ -90,12 +80,6 @@ export const UserMutations = extendType({
         role: nonNull(stringArg()),
       },
       resolve: async (_source, args, ctx) => {
-        // const anyUser = await ctx.db.user.findFirst({ where: { username } });
-
-        // if (anyUser) {
-        //   throw new ApolloError('Username already in use');
-        // }
-
         const user = await ctx.db.user.create({
           data: {
             name: args.name,

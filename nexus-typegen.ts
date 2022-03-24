@@ -80,6 +80,7 @@ export interface NexusGenFieldTypes {
     updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     updateRoom: NexusGenRootTypes['Room'] | null; // Room
     userCreate: NexusGenRootTypes['Login']; // Login!
+    userLogin: NexusGenRootTypes['Login']; // Login!
   }
   Query: { // field return type
     reservation: NexusGenRootTypes['Reservation'] | null; // Reservation
@@ -126,6 +127,7 @@ export interface NexusGenFieldTypeNames {
     updateReservation: 'Reservation'
     updateRoom: 'Room'
     userCreate: 'Login'
+    userLogin: 'Login'
   }
   Query: { // field return type name
     reservation: 'Reservation'
@@ -196,6 +198,10 @@ export interface NexusGenArgTypes {
       name: string; // String!
       password: string; // String!
       role: string; // String!
+    }
+    userLogin: { // args
+      mail: string; // String!
+      password: string; // String!
     }
   }
   Query: {

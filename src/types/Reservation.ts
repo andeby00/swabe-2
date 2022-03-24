@@ -57,7 +57,18 @@ export const ReservationQueries = extendType({
         uid: nonNull(stringArg()),
       },
       resolve: async (_source, { uid }, ctx) => {
-        return await ctx.db.reservation.findUnique({ where: { id: uid } });
+        const reservation = await ctx.db.reservation.findUnique({
+          where: { id: uid },
+        });
+        if (ctx.user?.role === "Guest") {
+          if (reservation?.userId === ctx.user.id) {
+            return reservation;
+          } else {
+            throw new Error("Unauthorized");
+          }
+        } else {
+          return reservation;
+        }
       },
     });
   },
@@ -80,7 +91,7 @@ export const ReservationMutations = extendType({
             room: { connect: { roomNumber: args.roomNumber } },
             start: args.start,
             end: args.end,
-            user: { connect: { id: "" } },
+            user: { connect: { id: ctx.user?.id } },
           },
         });
       },
@@ -95,7 +106,7 @@ export const ReservationMutations = extendType({
         userId: nonNull(stringArg()),
       },
       resolve: async (_source, args, ctx) => {
-        return await ctx.db.reservation.update({
+        const reservation = await ctx.db.reservation.update({
           where: { id: args.uid },
           data: {
             room: { connect: { roomNumber: args.roomNumber } },
@@ -104,6 +115,15 @@ export const ReservationMutations = extendType({
             user: { connect: { id: args.userId } },
           },
         });
+        if (ctx.user?.role === "Guest") {
+          if (reservation?.userId === ctx.user.id) {
+            return reservation;
+          } else {
+            throw new Error("Unauthorized");
+          }
+        } else {
+          return reservation;
+        }
       },
     });
     t.field("deleteReservation", {

@@ -1,8 +1,11 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { prisma, Prisma, PrismaClient } from "@prisma/client";
 import { ApolloServer, gql } from "apollo-server";
+import { applyMiddleware } from "graphql-middleware";
+import { verify } from "jsonwebtoken";
 import { makeSchema } from "nexus";
 import { $settings } from "nexus-prisma";
 import { join } from "path";
+import { permissions } from "./shield";
 import * as types from "./types";
 
 const schema = makeSchema({
@@ -17,11 +20,37 @@ const schema = makeSchema({
   },
 });
 
+const schemaWithMiddleware = applyMiddleware(schema, permissions);
+
+const db = new PrismaClient();
+
 const server = new ApolloServer({
-  schema,
+  schema: schemaWithMiddleware,
   async context(httpContext) {
-    // check connection for metadata
-    return { db: new PrismaClient() };
+    if (httpContext.connection) {
+      // check connection for metadata
+      return { db };
+    }
+    try {
+      const header = httpContext.req.header("Authorization")?.split(" ");
+      const [bearer, token] = header || [];
+      const user: { userId: string } = (await verify(
+        token || "",
+        process.env.SECRET!
+      )) as any;
+      const context = {
+        db,
+        // <-- You put Prisma client on the "db" context property
+        user: await db.user.findUnique({
+          where: { id: user.userId },
+        }),
+      };
+      return context;
+    } catch {
+      return {
+        db,
+      };
+    }
   },
 });
 
