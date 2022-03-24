@@ -29,8 +29,17 @@ export const UserQueries = extendType({
   definition: (t) => {
     t.field("users", {
       type: nonNull(list(nonNull("User"))),
-      resolve: async (source, args, ctx) => {
+      resolve: async (_source, _args, ctx) => {
         return ctx.db.user.findMany();
+      },
+    });
+    t.field("user", {
+      type: "User",
+      args: {
+        uid: nonNull(stringArg()),
+      },
+      resolve: async (_source, args, ctx) => {
+        return await ctx.db.user.findUnique({ where: { id: args.uid } });
       },
     });
   },
@@ -47,7 +56,40 @@ export const UserMutations = extendType({
         password: nonNull(stringArg()),
         role: nonNull(stringArg()),
       },
-      resolve: async (source, args, ctx) => {
+      resolve: async (_source, args, ctx) => {
+        // const anyUser = await ctx.db.user.findFirst({ where: { username } });
+
+        // if (anyUser) {
+        //   throw new ApolloError('Username already in use');
+        // }
+
+        const user = await ctx.db.user.create({
+          data: {
+            name: args.name,
+            mail: args.mail,
+            password: await hash(args.password, 12),
+            role: args.role,
+          },
+        });
+
+        return {
+          token: await sign({ userId: user.id }, process.env.SECRET!, {
+            expiresIn: "60m",
+          }),
+          name: user.name,
+          id: user.id,
+        };
+      },
+    });
+    t.field("userCreate", {
+      type: nonNull("Login"),
+      args: {
+        name: nonNull(stringArg()),
+        mail: nonNull(stringArg()),
+        password: nonNull(stringArg()),
+        role: nonNull(stringArg()),
+      },
+      resolve: async (_source, args, ctx) => {
         // const anyUser = await ctx.db.user.findFirst({ where: { username } });
 
         // if (anyUser) {

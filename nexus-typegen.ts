@@ -35,6 +35,18 @@ export interface NexusGenObjects {
   }
   Mutation: {};
   Query: {};
+  Reservation: { // root type
+    end: number; // Int!
+    id: string; // ID!
+    start: number; // Int!
+    token?: string | null; // String
+  }
+  Room: { // root type
+    capacity: number; // Int!
+    category: string; // String!
+    minibar: boolean; // Boolean!
+    roomNumber: number; // Int!
+  }
   User: { // root type
     id: string; // ID!
     mail: string; // String!
@@ -61,10 +73,35 @@ export interface NexusGenFieldTypes {
     token: string | null; // String
   }
   Mutation: { // field return type
+    createReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    createRoom: NexusGenRootTypes['Room'] | null; // Room
+    deleteReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    deleteRoom: NexusGenRootTypes['Room'] | null; // Room
+    updateReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    updateRoom: NexusGenRootTypes['Room'] | null; // Room
     userCreate: NexusGenRootTypes['Login']; // Login!
   }
   Query: { // field return type
+    reservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    reservations: NexusGenRootTypes['Room'][]; // [Room!]!
+    room: NexusGenRootTypes['Room'] | null; // Room
+    rooms: NexusGenRootTypes['Room'][]; // [Room!]!
+    user: NexusGenRootTypes['User'] | null; // User
     users: NexusGenRootTypes['User'][]; // [User!]!
+  }
+  Reservation: { // field return type
+    end: number; // Int!
+    id: string; // ID!
+    room: NexusGenRootTypes['Room'] | null; // Room
+    start: number; // Int!
+    token: string | null; // String
+    user: NexusGenRootTypes['User'] | null; // User
+  }
+  Room: { // field return type
+    capacity: number; // Int!
+    category: string; // String!
+    minibar: boolean; // Boolean!
+    roomNumber: number; // Int!
   }
   User: { // field return type
     id: string; // ID!
@@ -82,10 +119,35 @@ export interface NexusGenFieldTypeNames {
     token: 'String'
   }
   Mutation: { // field return type name
+    createReservation: 'Reservation'
+    createRoom: 'Room'
+    deleteReservation: 'Reservation'
+    deleteRoom: 'Room'
+    updateReservation: 'Reservation'
+    updateRoom: 'Room'
     userCreate: 'Login'
   }
   Query: { // field return type name
+    reservation: 'Reservation'
+    reservations: 'Room'
+    room: 'Room'
+    rooms: 'Room'
+    user: 'User'
     users: 'User'
+  }
+  Reservation: { // field return type name
+    end: 'Int'
+    id: 'ID'
+    room: 'Room'
+    start: 'Int'
+    token: 'String'
+    user: 'User'
+  }
+  Room: { // field return type name
+    capacity: 'Int'
+    category: 'String'
+    minibar: 'Boolean'
+    roomNumber: 'Int'
   }
   User: { // field return type name
     id: 'ID'
@@ -98,11 +160,60 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    createReservation: { // args
+      end: number; // Int!
+      roomNumber: number; // Int!
+      start: number; // Int!
+      userId: string; // String!
+    }
+    createRoom: { // args
+      capacity: number; // Int!
+      category: string; // String!
+      minibar: boolean; // Boolean!
+      roomNumber: number; // Int!
+    }
+    deleteReservation: { // args
+      uid: string; // String!
+    }
+    deleteRoom: { // args
+      roomNumber: number; // Int!
+    }
+    updateReservation: { // args
+      end: number; // Int!
+      roomNumber: number; // Int!
+      start: number; // Int!
+      uid: string; // String!
+      userId: string; // String!
+    }
+    updateRoom: { // args
+      capacity: number; // Int!
+      category: string; // String!
+      minibar: boolean; // Boolean!
+      roomNumber: number; // Int!
+    }
     userCreate: { // args
       mail: string; // String!
       name: string; // String!
       password: string; // String!
       role: string; // String!
+    }
+  }
+  Query: {
+    reservation: { // args
+      uid: string; // String!
+    }
+    reservations: { // args
+      from?: number | null; // Int
+      to?: number | null; // Int
+    }
+    room: { // args
+      roomNumber: number; // Int!
+    }
+    rooms: { // args
+      date: number; // Int!
+    }
+    user: { // args
+      uid: string; // String!
     }
   }
 }

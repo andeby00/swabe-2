@@ -9,11 +9,38 @@ type Login {
 }
 
 type Mutation {
+  createReservation(end: Int!, roomNumber: Int!, start: Int!, userId: String!): Reservation
+  createRoom(capacity: Int!, category: String!, minibar: Boolean!, roomNumber: Int!): Room
+  deleteReservation(uid: String!): Reservation
+  deleteRoom(roomNumber: Int!): Room
+  updateReservation(end: Int!, roomNumber: Int!, start: Int!, uid: String!, userId: String!): Reservation
+  updateRoom(capacity: Int!, category: String!, minibar: Boolean!, roomNumber: Int!): Room
   userCreate(mail: String!, name: String!, password: String!, role: String!): Login!
 }
 
 type Query {
+  reservation(uid: String!): Reservation
+  reservations(from: Int, to: Int): [Room!]!
+  room(roomNumber: Int!): Room
+  rooms(date: Int!): [Room!]!
+  user(uid: String!): User
   users: [User!]!
+}
+
+type Reservation {
+  end: Int!
+  id: ID!
+  room: Room
+  start: Int!
+  token: String
+  user: User
+}
+
+type Room {
+  capacity: Int!
+  category: String!
+  minibar: Boolean!
+  roomNumber: Int!
 }
 
 type User {
